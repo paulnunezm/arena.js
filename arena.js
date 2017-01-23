@@ -30,7 +30,7 @@ var TRANSITIONS = {
 function _setValue(a, defaultValue, errorMessage) {
     var b = (typeof a !== 'undefined') ?  a : defaultValue;
 
-    if(defaultValue == "no_default") {
+    if(defaultValue == "no_default" && b == defaultValue) {
         console.error(errorMessage);
         return false;
     }
@@ -114,7 +114,7 @@ function init(options) {
 
 function Arena(options) {
 
-var mOptions;
+var mOptions = {};
     mOptions.totalImages = _setValue(options.totalImages, 1);
     mOptions.imgPrefix = _setValue(options.imgPrefix, 'no_default', "Images Prefix: a prefix must be set.");
     mOptions.imgFormat = _setValue(options.imgFormat, '.jpg');
