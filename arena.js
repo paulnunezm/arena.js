@@ -49,17 +49,12 @@ function init(options) {
     var sliderUl = $("#arena_ul"),
         bullets = $("#arena_bullets");
 
-    // ****  Injecting Child Elements ****
-    var sliderUl = $("#arena_ul"),
-        bullets = $("#arena_bullets");
-
     var items_cssRules = null;
 
     for(var item = 1; item <= options.totalImages; item++){
 
         var liTag = document.createElement("li"),
             bulletLiTag = document.createElement("li");
-
 
         liTag.setAttribute("id",SELECTORS.item+item);
         bulletLiTag.setAttribute("id",SELECTORS.bullet+item);
@@ -100,14 +95,11 @@ function init(options) {
         }
 
         $(SELECTORS.item+item).css(items_cssRules);
-
-
     }
 
     $(SELECTORS.bullet+"1").addClass("active");
 
-    if(!sliderInfinite)
-        $("#slider_leftButton").css("display","none");
+    if(!options.infiniteScroll) $("#slider_leftButton").css("display","none");
 }
 
 
