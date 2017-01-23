@@ -55,7 +55,7 @@ function init(options) {
 
     var items_cssRules = null;
 
-    for(var item = 1; i <= options.totalImages; item++){
+    for(var item = 1; item <= options.totalImages; item++){
 
         var liTag = document.createElement("li"),
             bulletLiTag = document.createElement("li");
