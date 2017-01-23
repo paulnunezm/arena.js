@@ -144,7 +144,21 @@ function init(options) {
     if(!options.infiniteScroll) $("#slider_leftButton").css("display","none");
 }
 
-function TransitionBaseHandler(totalImages) {
+/**
+ * Handles the slides transitions while delegating the
+ * animations to any Class that override the
+ * animation methods.
+ * <p>
+*     AnimationCallback must implement two methods:
+ *     .leftAnimation and .rightAnimation
+ *    each method must handle the animation of both the current and previous slides.
+ *
+ * @param totalImages
+ * @param animationCallback
+ * @constructor
+ */
+function TransitionBaseHandler(totalImages, animationCallback) {
+
     this.left = function () {
         slideStateHandler.decrement();
 
@@ -155,7 +169,7 @@ function TransitionBaseHandler(totalImages) {
         }else{
             _elementDisplay(ARROWS.right, true);
             _changeBulletPosition(slideState);
-            this.leftAnimation($(SELECTORS.item+slideState), $(SELECTORS.item+(slideState+1)));
+            animationCallback.leftAnimation($(SELECTORS.item+slideState), $(SELECTORS.item+(slideState+1)));
         }
     };
 
@@ -167,17 +181,9 @@ function TransitionBaseHandler(totalImages) {
         } else{
             _elementDisplay(ARROWS.left, true);
             _changeBulletPosition(slideState);
-            this.rightAnimation($(SELECTORS.item+(slideState-1)), $(SELECTORS.item+slideState));
+            animationCallback.rightAnimation($(SELECTORS.item+(slideState-1)), $(SELECTORS.item+slideState));
         }
     };
-
-    /**
-     * Must be overwritten in each transitionHandler.
-     *
-     * This is where you can add implementation for new custom transitions.
-     */
-    this.leftAnimation = function ($current, $next) {};
-    this.rightAnimation = function ($current, $next) {};
 }
 
 /**
@@ -187,18 +193,18 @@ function TransitionBaseHandler(totalImages) {
  */
 function FadeTransition(totalImages) {
 
-    var transitionHandler = new TransitionBaseHandler(totalImages);
-
-    // overrides
-    transitionHandler.leftAnimation = function ($current, $next) {
+    var callback = {};
+    callback.leftAnimation = function ($current, $next) {
         $next.animate({opacity:"0"},800,'linear');
         $current.animate({opacity:"1"},800,'linear');
     };
 
-    transitionHandler.rightAnimation = function ($current, $next) {
+    callback.rightAnimation = function ($current, $next) {
         $current.animate({opacity:"0"},800,'linear');
         $next.animate({opacity:"1"},800,'linear');
     };
+
+    var transitionHandler = new TransitionBaseHandler(totalImages, callback);
 
     this.left = transitionHandler.left;
     this.right = transitionHandler.right;
