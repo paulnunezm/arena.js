@@ -3,11 +3,11 @@
 // Constants
 //=====================
 
-// Transition supported
+// Transitions supported
 var TRANSITIONS = {
         fade : "fade",
-        slide : "slide",
-        verticalSlide: "vertical_slide"
+        // slide : "slide",
+        // verticalSlide: "vertical_slide"
     },
     SELECTORS = {
         item : "#arena_item_",
@@ -103,7 +103,8 @@ function init(options) {
 
         // Appending child's
         sliderUl.append(liTag);
-        $(SELECTORS.item+item).css("background","url("+
+        $(SELECTORS.item+item).css("background",
+            "url("+
             options.imgPath +
             options.prefix +
             item +
@@ -232,7 +233,7 @@ function setTranstiton(transitionType, totalImages) {
 
 function Arena(options) {
 
-var mOptions = {};
+    var mOptions = {};
     mOptions.totalImages = _setValue(options.totalImages, 1);
     mOptions.imgPrefix = _setValue(options.imgPrefix, 'no_default', "Images Prefix: a prefix must be set.");
     mOptions.imgFormat = _setValue(options.imgFormat, '.jpg');
