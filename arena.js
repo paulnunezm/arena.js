@@ -14,6 +14,48 @@ var TRANSITIONS = {
         bullet : "#arena_bullet_"
     };
 
+var slideState = 1, // Current slide
+    slideStateHandler = {
+        increment: function () {
+            slideState++;
+        },
+        decrement : function () {
+            slideState--;
+        },
+        set: function (to) {
+            slideState = to;
+        }
+    },
+    ARROW_ID ={
+        left: "arena_left_arrow",
+        right: "arena_right_arrow"
+    },
+    ARROWS = {
+        left: $("#"+ARROW_ID.left),
+        right: $("#"+ARROW_ID.right)
+    };
+
+/**
+ * Changes the current bullet position.
+ * @param number of the bullet to change to
+ * @private
+ */
+function _changeBulletPosition(number) {
+    $("#arena_bullets li").removeClass('active');
+    $(SELECTORS.bullet+number).addClass('active');
+}
+
+/**
+ * Sets a HTML element display block or none.
+ *
+ * @param $element A jQuery element to handle
+ * @param value true (block) or false (none)
+ * @private
+ */
+function _elementDisplay($element, value) {
+    var display = (value) ? "block" : "none";
+    $element.css("display", display);
+}
 
 /**
  * Checks if a value is undefined and if it is
@@ -102,6 +144,84 @@ function init(options) {
     if(!options.infiniteScroll) $("#slider_leftButton").css("display","none");
 }
 
+function TransitionBaseHandler(totalImages) {
+    this.left = function () {
+        slideStateHandler.decrement();
+
+        if(slideState == 1 )_elementDisplay(ARROWS.left, false);
+
+        if(slideState == 0){
+            slideStateHandler.set(1);
+        }else{
+            _elementDisplay(ARROWS.right, true);
+            _changeBulletPosition(slideState);
+            this.leftAnimation($(SELECTORS.item+slideState), $(SELECTORS.item+(slideState+1)));
+        }
+    };
+
+    this.right = function () {
+        slideStateHandler.increment();
+
+        if(slideState > totalImages){
+            slideStateHandler.set(totalImages);
+        } else{
+            _elementDisplay(ARROWS.left, true);
+            _changeBulletPosition(slideState);
+            this.rightAnimation($(SELECTORS.item+(slideState-1)), $(SELECTORS.item+slideState));
+        }
+    };
+
+    /**
+     * Must be overwritten in each transitionHandler.
+     *
+     * This is where you can add implementation for new custom transitions.
+     */
+    this.leftAnimation = function ($current, $next) {};
+    this.rightAnimation = function ($current, $next) {};
+}
+
+/**
+ * A fade transition implementation.
+ * @param totalImages
+ * @constructor
+ */
+function FadeTransition(totalImages) {
+
+    var transitionHandler = new TransitionBaseHandler(totalImages);
+
+    // overrides
+    transitionHandler.leftAnimation = function ($current, $next) {
+        $next.animate({opacity:"0"},800,'linear');
+        $current.animate({opacity:"1"},800,'linear');
+    };
+
+    transitionHandler.rightAnimation = function ($current, $next) {
+        $current.animate({opacity:"0"},800,'linear');
+        $next.animate({opacity:"1"},800,'linear');
+    };
+
+    this.left = transitionHandler.left;
+    this.right = transitionHandler.right;
+}
+
+/**
+ * This method provides the correct transition handler for each transition
+ * type.
+ * @param type transition type
+ * @constructor
+ */
+function TransitionFactory(type, totalImages) {
+
+    if(type == TRANSITIONS.fade){
+        return new FadeTransition(totalImages);
+    }else{
+        console.error("This transition is not yet supported");
+    }
+}
+
+function setTranstiton(transitionType, totalImages) {
+   return new TransitionFactory(transitionType, totalImages);
+}
 
 
 function Arena(options) {
@@ -116,4 +236,10 @@ var mOptions = {};
     mOptions.debug = _setValue(options.debug, false);
 
     init(mOptions);
+    var transition = setTranstiton(mOptions.transition, options.totalImages);
+
+    // set listeners
+    ARROWS.left.on("click touchstart'", transition.left);
+    ARROWS.right.on("click touchstart'", transition.right);
+
 }
