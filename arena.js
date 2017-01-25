@@ -98,15 +98,16 @@ function init(options) {
         var liTag = document.createElement("li"),
             bulletLiTag = document.createElement("li");
 
-        liTag.setAttribute("id",SELECTORS.item+item);
-        bulletLiTag.setAttribute("id",SELECTORS.bullet+item);
+        liTag.setAttribute("id",SELECTORS.item.replace("#","")+item);
+        bulletLiTag.setAttribute("id",SELECTORS.bullet.replace("#","")+item);
 
         // Appending child's
         sliderUl.append(liTag);
+
         $(SELECTORS.item+item).css("background",
             "url("+
             options.imgPath +
-            options.prefix +
+            options.imgPrefix +
             item +
             options.imgFormat +
             ") center top/cover");
