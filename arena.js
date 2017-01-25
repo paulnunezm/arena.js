@@ -241,6 +241,7 @@ function Arena(options) {
     mOptions.imgFormat = _setValue(options.imgFormat, '.jpg');
     mOptions.imgPath = _setValue(options.imgPath, 'sliderImages');
     mOptions.infiniteScroll = _setValue(options.infiniteScroll, true);
+    mOptions.autoScroll = _setValue(options.autoScroll, true);
     mOptions.transition = _setValue(options.transition, TRANSITIONS.fade);
     mOptions.debug = _setValue(options.debug, false);
 
