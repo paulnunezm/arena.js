@@ -165,27 +165,28 @@ function TransitionBaseHandler(totalImages, animationCallback) {
     this.left = function () {
         slideStateHandler.decrement();
 
-        if(slideState == 1 )_elementDisplay(ARROWS.left, false);
+        if(slideState == 0) slideStateHandler.set(totalImages);
 
-        if(slideState == 0){
-            slideStateHandler.set(1);
-        }else{
-            _elementDisplay(ARROWS.right, true);
-            _changeBulletPosition(slideState);
-            animationCallback.leftAnimation($(SELECTORS.item+slideState), $(SELECTORS.item+(slideState+1)));
-        }
+        _elementDisplay(ARROWS.right, true);
+        _changeBulletPosition(slideState);
+        animationCallback.leftAnimation($(SELECTORS.item+slideState), $(SELECTORS.item+(slideState+1)));
     };
 
     this.right = function () {
+        var $currentSlide, $nextSlide;
         slideStateHandler.increment();
 
         if(slideState > totalImages){
-            slideStateHandler.set(totalImages);
-        } else{
-            _elementDisplay(ARROWS.left, true);
-            _changeBulletPosition(slideState);
-            animationCallback.rightAnimation($(SELECTORS.item+(slideState-1)), $(SELECTORS.item+slideState));
+            slideStateHandler.set(1);
+            $currentSlide = $(SELECTORS.item+totalImages);
+            $nextSlide = $(SELECTORS.item+slideState);
+        }else{
+           $currentSlide = $(SELECTORS.item+(slideState-1));
+           $nextSlide = $(SELECTORS.item+slideState);
         }
+
+        animationCallback.rightAnimation($currentSlide, $nextSlide);
+        _changeBulletPosition(slideState);
     };
 }
 
