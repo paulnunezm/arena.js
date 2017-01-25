@@ -136,9 +136,10 @@ function init(options) {
 
         if(item == 1){
             $(SELECTORS.item+"1").css(item_1_cssRules);
+        }else{
+            $(SELECTORS.item+item).css(items_cssRules);
         }
 
-        $(SELECTORS.item+item).css(items_cssRules);
     }
 
     $(SELECTORS.bullet+"1").addClass("active");
