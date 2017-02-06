@@ -6,7 +6,7 @@
 // Transitions supported
 var TRANSITIONS = {
         fade : "fade",
-        // slide : "slide",
+        slide : "slide"
         // verticalSlide: "vertical_slide"
     },
     SELECTORS = {
@@ -121,7 +121,8 @@ function init(options) {
             switch (options.transition){
                 case TRANSITIONS.slide:
                     item_1_cssRules = {left:0};
-                    items_cssRules  = {left: "100%"};
+                    // // items_cssRules  = {left: "100%"};
+                    items_cssRules = item_1_cssRules;
                     break;
                 case TRANSITIONS.verticalSlide:
                     item_1_cssRules = {left:"0", top:"0"};
@@ -136,8 +137,15 @@ function init(options) {
 
         if(item == 1){
             $(SELECTORS.item+"1").css(item_1_cssRules);
+
+            if(options.transition == TRANSITIONS.slide){
+                TweenMax.set($(SELECTORS.item+"1"),{x:0});
+            }
         }else{
             $(SELECTORS.item+item).css(items_cssRules);
+            if(options.transition == TRANSITIONS.slide){
+                TweenMax.set( $(SELECTORS.item+item),{x:"100%"});
+            }
         }
 
     }
@@ -215,6 +223,32 @@ function FadeTransition(totalImages) {
 }
 
 /**
+ * A slide transition implementation.
+ * @param totalImages
+ * @constructor
+ */
+function SlideTransition(totalImages) {
+    var callback = {};
+    callback.leftAnimation = function ($next, $current) {
+        TweenMax.set($next,{x:"-100%"});
+        TweenMax.to($next, 0.5, {x: "0%", ease:Power0.easeNone });
+        TweenMax.to($current, 0.5, {x: "100%", ease:Power0.easeNone });
+    };
+
+    callback.rightAnimation = function ($current, $next) {
+        console.log(slideState);
+        TweenMax.set($next,{x:"100%"});
+        TweenMax.to($next, 0.5, {x: "0%", ease:Power0.easeNone });
+        TweenMax.to($current, 0.5, {x: "-100%", ease:Power0.easeNone });
+    };
+
+    var transitionHandler = new TransitionBaseHandler(totalImages, callback);
+
+    this.left = transitionHandler.left;
+    this.right = transitionHandler.right;
+}
+
+/**
  * This method provides the correct transition handler for each transition
  * type.
  * @param type transition type
@@ -224,6 +258,8 @@ function TransitionFactory(type, totalImages) {
 
     if(type == TRANSITIONS.fade){
         return new FadeTransition(totalImages);
+    }else if (type == TRANSITIONS.slide) {
+        return new SlideTransition(totalImages);
     }else{
         console.error("This transition is not yet supported");
     }
