@@ -11,7 +11,8 @@ var TRANSITIONS = {
     },
     SELECTORS = {
         item : "#arena_item_",
-        bullet : "#arena_bullet_"
+        bullet : "#arena_bullet_",
+        caption: "arena_caption"
     };
 
 var slideState = 1, // Current slide
@@ -96,12 +97,15 @@ function init(options) {
     for(var item = 1; item <= options.totalImages; item++){
 
         var liTag = document.createElement("li"),
+            textDiv = document.createElement('div'),
             bulletLiTag = document.createElement("li");
 
         liTag.setAttribute("id",SELECTORS.item.replace("#","")+item);
+        textDiv.setAttribute("class", SELECTORS.caption);
         bulletLiTag.setAttribute("id",SELECTORS.bullet.replace("#","")+item);
 
         // Appending child's
+        liTag.append(textDiv);
         sliderUl.append(liTag);
 
         $(SELECTORS.item+item).css("background",
@@ -146,6 +150,12 @@ function init(options) {
             if(options.transition == TRANSITIONS.slide){
                 TweenMax.set( $(SELECTORS.item+item),{x:"100%"});
             }
+        }
+
+        //set captions
+        if(options.captions.length >= 1){
+            if(options.captions[item-1] != null);
+            $(SELECTORS.item+item+" ."+SELECTORS.caption).html(options.captions[item-1]);
         }
 
     }
@@ -280,6 +290,7 @@ function Arena(options) {
     mOptions.infiniteScroll = _setValue(options.infiniteScroll, true);
     mOptions.autoScroll = _setValue(options.autoScroll, true);
     mOptions.transition = _setValue(options.transition, TRANSITIONS.fade);
+    mOptions.captions = _setValue(options.captions, []);
     mOptions.debug = _setValue(options.debug, false);
 
     init(mOptions);
