@@ -32,8 +32,12 @@ var slideState = 1, // Current slide
         right: "arena_right_arrow"
     },
     ARROWS = {
-        left: $("#"+ARROW_ID.left),
-        right: $("#"+ARROW_ID.right)
+        left: null,
+        right: null,
+        initialize: function () {
+            this.left =  $("#"+ARROW_ID.left);
+            this.right =$("#"+ARROW_ID.right);
+        }
     };
 
 /**
@@ -88,6 +92,16 @@ function _setValue(a, defaultValue, errorMessage) {
  * @param options
  */
 function init(options) {
+
+    $("#arena").append( '  ' +
+        ' <ul id="arena_ul" class="items"></ul>  '  +
+        '     <!— Navigations —>  '  +
+        '     <div id="arena_left_arrow"></div>  '  +
+        '     <div id="arena_right_arrow"></div>  '  +
+        '     <ul id="arena_bullets"></ul>  '  +
+        '    <!— /Navigations —>  ' +
+    '');
+
     // inject HTML elements
     var sliderUl = $("#arena_ul"),
         bullets = $("#arena_bullets");
@@ -297,6 +311,7 @@ function Arena(options) {
     var transition = setTranstiton(mOptions.transition, options.totalImages);
 
     // set listeners
+    ARROWS.initialize();
     ARROWS.left.on("click touchstart'", transition.left);
     ARROWS.right.on("click touchstart'", transition.right);
 
